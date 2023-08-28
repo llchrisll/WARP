@@ -1,6 +1,6 @@
  /**************************************************************************\
 *                                                                          *
-*   Copyright (C) 2022 Neo-Mind                                            *
+*   Copyright (C) 2021-2023 Neo-Mind                                       *
 *                                                                          *
 *   This file is a part of WARP project                                    *
 *                                                                          *
@@ -22,7 +22,7 @@
 *                                                                          *
 *   Author(s)     : Neo-Mind                                               *
 *   Created Date  : 2022-09-22                                             *
-*   Last Modified : 2022-09-22                                             *
+*   Last Modified : 2023-08-26                                             *
 *                                                                          *
 \**************************************************************************/
 
@@ -71,10 +71,10 @@ export function load()
 {
 	const _ = Log.dive(self, 'load');
 
-	$$(_ + '1.1 - Check if load was already called')
+	$$(_, 1.1, `Check if load was already called`)
 	if (Valid != null)
 	{
-		$$(_ + '1.2 - Check for errors and report them again if present otherwise simply return')
+		$$(_, 1.2, `Check for errors and report them again if present otherwise simply return`)
 		Log.rise();
 
 		if (Valid)
@@ -83,10 +83,10 @@ export function load()
 			throw ErrMsg;
 	}
 
-	$$(_ + '1.3 - Initialize \'Valid\' to false')
+	$$(_, 1.3, `Initialize [Valid] to false`)
 	Valid = false;
 	
-	$$(_ + '2.1 - Find the reference PUSH (Base Exp Bar coords)')
+	$$(_, 2.1, `Find the reference PUSH (Base Exp Bar coords)`)
 	let code =
 		PUSH(0x4E)   //push 4Eh
 	+	PUSH(-0xC8)  //push -0C8h
@@ -95,7 +95,7 @@ export function load()
 	if (refAddr < 0)
 		throw Log.rise(ErrMsg = new Error(`${self} - Base coords not PUSHed`));
 	
-	$$(_ + '2.3 - Find the GetJobID call before the PUSH')
+	$$(_, 2.3, `Find the GetJobID call before the PUSH`)
 	code =
 		MOV(ECX, POS4WC)  //mov ecx, <g_session>
 	+	CALL(ALLWC)       //call CSession::GetJobID
@@ -109,7 +109,7 @@ export function load()
 
 	const afterBB = basebegin + code.byteCount();
 	
-	$$(_ + '2.4 - Save the values')
+	$$(_, 2.4, `Save the values`)
 	const GetJobID = Exe.GetTgtAddr(basebegin + 6);
 	const IsThirdJob = Exe.GetTgtAddr(afterBB - 4);
 	
@@ -127,7 +127,7 @@ export function load()
 		afterBB
 	};
 	
-	$$(_ + '2.5 - Set validity to true')
+	$$(_, 2.5, `Set [Valid] to true`)
 	return Log.rise(Valid = true);
 }
 

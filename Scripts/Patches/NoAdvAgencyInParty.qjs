@@ -1,7 +1,7 @@
 /**************************************************************************\
 *                                                                          *
-*   Copyright (C) 2021-2022 Andrei Karas (4144)                            *
-*   Copyright (C) 2021-2022 X-EcutiOnner (xex.ecutionner@gmail.com)        *
+*   Copyright (C) 2021-2023 Andrei Karas (4144)                            *
+*   Copyright (C) 2021-2023 X-EcutiOnner (xex.ecutionner@gmail.com)        *
 *                                                                          *
 *   This file is a part of WARP project                                    *
 *                                                                          *
@@ -23,7 +23,7 @@
 *                                                                          *
 *   Author(s)     : Andrei, X-EcutiOnner                                   *
 *   Created Date  : 2021-06-14                                             *
-*   Last Modified : 2022-09-24                                             *
+*   Last Modified : 2023-08-26                                             *
 *                                                                          *
 \**************************************************************************/
 
@@ -31,11 +31,9 @@
 /// \brief NOPs all offset after comparison (inside UIMessengerGroupWnd_virt68 function)
 ///        to disable the creation of adventurer agency button on the party window.
 ///
-NoAdvAgencyInParty = function()
+NoAdvAgencyInParty = function(_)
 {
-	const _ = 'NoAdvAgencyInParty : ';
-
-	$$(_ + '1 - Find the button prep inside the function')
+	$$(_, 1, `Find the button prep inside the function`)
 	const reg = Exe.BuildDate > 20220000 ? EBX : EDI;
 	const template =
 		MOV(ECX, [reg, POS2WC]) //mov ecx, dword ptr [edi/ebx + UIMessengerGroupWnd.m_mesbtn]
@@ -75,7 +73,7 @@ NoAdvAgencyInParty = function()
 	if (addr < 0)
 		throw Error("Function not found");
 	
-	$$(_ + '2 - NOP out the creation')
+	$$(_, 2, `NOP out the creation`)
 	Exe.SetNOPs(addr, code.byteCount());
 
 	return true;

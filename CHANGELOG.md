@@ -1,3 +1,14 @@
+# 2023-08-27 Changes
+
+## Common Updates
+- Updated Copyright year in all the files.
+
+## Script Updates
+- Updated **`$$`** function to accept 3 arguments to show as `arg1 : arg2 - arg3`.
+
+  Also fixed angled brackets not being displayed in console.
+
+
 # 2022-12-30 Changes
 
 ## Patch Updates

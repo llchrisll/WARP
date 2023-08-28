@@ -1,7 +1,7 @@
 /**************************************************************************\
 *                                                                          *
 *   Copyright (C) 2017 Secret, A.K.M.                                      *
-*   Copyright (C) 2020-2022 Neo-Mind                                       *
+*   Copyright (C) 2020-2023 Neo-Mind                                       *
 *                                                                          *
 *   This file is a part of WARP project (specific to RO clients)           *
 *                                                                          *
@@ -23,18 +23,16 @@
 *                                                                          *
 *   Author(s)     : Secret, A.K.M., Neo-Mind                               *
 *   Created Date  : 2020-11-12                                             *
-*   Last Modified : 2022-09-24                                             *
+*   Last Modified : 2023-08-26                                             *
 *                                                                          *
 \**************************************************************************/
 
 ///
 /// \brief Infinite intravision patch (Always see cloaked objects)
 ///
-Intravision = function()
+Intravision = function(_)
 {
-	const _ = 'Intravision : ';
-
-	$$(_ + '1 - Find the comparison loop')
+	$$(_, 1, `Find the comparison loop`)
 	let parts;
 	if (!ROC.Post2010)
 	{
@@ -68,7 +66,7 @@ Intravision = function()
 	if (addrs.isEmpty())
 		throw Error("Comparison missing");
 
-	$$(_ + '2 - Change the JZ/JNE SHORT to JMP for the right match')
+	$$(_, 2, `Change the JZ/JNE SHORT to JMP for the right match`)
 	const code =
 		PUSH_2							//push 2
 	+	MOV(ECX, ESI)					//mov ecx, esi

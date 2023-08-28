@@ -1,9 +1,9 @@
 /**************************************************************************\
 *                                                                          *
-*   Copyright (C) 2020-2022 Functor                                        *
-*   Copyright (C) 2020-2022 CH.C (jchcc)                                   *
-*   Copyright (C) 2020-2022 Andrei Karas (4144)                            *
-*   Copyright (C) 2020-2022 X-EcutiOnner (xex.ecutionner@gmail.com)        *
+*   Copyright (C) 2020-2023 Functor                                        *
+*   Copyright (C) 2020-2023 CH.C (jchcc)                                   *
+*   Copyright (C) 2020-2023 Andrei Karas (4144)                            *
+*   Copyright (C) 2020-2023 X-EcutiOnner (xex.ecutionner@gmail.com)        *
 *                                                                          *
 *   This file is a part of WARP project (specific to RO clients)           *
 *                                                                          *
@@ -25,7 +25,7 @@
 *                                                                          *
 *   Author(s)     : Functor, CH.C (jchcc), Andrei (4144), X-EcutiOnner     *
 *   Created Date  : 2020-11-11                                             *
-*   Last Modified : 2022-09-24                                             *
+*   Last Modified : 2023-08-26                                             *
 *                                                                          *
 \**************************************************************************/
 
@@ -33,11 +33,9 @@
 /// \brief Change the coords used for equipment swap button both on the
 ///        equipment window and costume window inside SWAPEQUIPMENTWNDINFO function.
 ///
-NoEquipSwap = function()
+NoEquipSwap = function(_)
 {
-	const _ = 'NoEquipSwap : ';
-
-	$$(_ + '1.1 - Find the location where equipment function is called')
+	$$(_, 1.1, `Find the location where equipment function is called`)
 	let prefix =
 		CALL(NEG3WC)            //call func#1
 	+	MOV(EAX, [EDI, 0x18])   //mov eax, dword ptr [edi + 18h]
@@ -57,7 +55,7 @@ NoEquipSwap = function()
 	let addr = Exe.FindHex(prefix + suffix);
 	if (addr > 0)
 	{
-		$$(_ + '1.2 - Change the SUB to ADD')
+		$$(_, 1.2, `Change the SUB to ADD`)
 		Exe.SetHex(addr + prefix.byteCount(), ADD(EAX, 0x14));
 	}
 	else if (Exe.BuildDate > 20210100)
@@ -75,7 +73,7 @@ NoEquipSwap = function()
 		addr = Exe.FindHex(prefix + suffix);
 		if (addr > 0)
 		{
-			$$(_ + '1.2 - Change the A7 to CF')
+			$$(_, 1.2, `Change the A7 to CF`)
 			Exe.SetUint32(addr + prefix.byteCount() + 1, 0xCF);
 		}
 	}
@@ -84,7 +82,7 @@ NoEquipSwap = function()
 
 	// TODO - This half needs live running to determine the coords
 
-	$$(_ + '2.1 - Find the location where costume function is called')
+	$$(_, 2.1, `Find the location where costume function is called`)
 	const code =
 		MOV(ECX, [ESI, POS2WC]) //mov ecx, dword ptr [esi + dispB]
 	+	TEST(ECX, ECX)          //test ecx, ecx
@@ -99,7 +97,7 @@ NoEquipSwap = function()
 	if (addr < 0)
 		throw Error("Costume function CALL missing");
 
-	$$(_ + '2.2 - Change 93h to FFh')
+	$$(_, 2.2, `Change 93h to FFh`)
 	Exe.SetUint8(addr + code.byteCount() - 5, 0xFF);
 
 	return true;
@@ -115,11 +113,9 @@ NoEquipSwap.validate = () =>
 /// \brief Change the JNZ after comparison to remove title window button
 ///        on the equipment window inside EQUIPMENTWNDINFO function.
 ///
-NoEquipWinTitle = function()
+NoEquipWinTitle = function(_)
 {
-	const _ = 'NoEquipWinTitle : ';
-
-	$$(_ + '1 - Find the location where equipment function is called')
+	$$(_, 1, `Find the location where equipment function is called`)
 	const delta = Exe.BuildDate > 20170000 ? POS2WC : WCp;
 	const prefix =
 		CALL(NEG3WC)              //call UITabControl_AddTab
@@ -156,7 +152,7 @@ NoEquipWinTitle = function()
 	logField("UIEquipWnd::m_UITabControl", addr, tabControlOffset);
 	*/
 
-	$$(_ + '2 - Change JNZ to JMP')
+	$$(_, 2, `Change JNZ to JMP`)
 	Exe.SetJMP(addr + prefix.byteCount());
 
 	return true;

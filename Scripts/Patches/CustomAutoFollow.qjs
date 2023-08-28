@@ -1,8 +1,8 @@
 /**************************************************************************\
 *                                                                          *
 *   Copyright (C) 2020 Functor                                             *
-*   Copyright (C) 2020-2022 Neo Mind                                       *
-*   Copyright (C) 2018-2022 CH.C (jchcc)                                   *
+*   Copyright (C) 2020-2023 Neo Mind                                       *
+*   Copyright (C) 2018-2023 CH.C (jchcc)                                   *
 *                                                                          *
 *   This file is a part of WARP project (specific to RO clients)           *
 *                                                                          *
@@ -24,7 +24,7 @@
 *                                                                          *
 *   Author(s)     : Functor, Neo-Mind, CH.C (jchcc)                        *
 *   Created Date  : 2020-11-11                                             *
-*   Last Modified : 2022-09-24                                             *
+*   Last Modified : 2023-08-26                                             *
 *                                                                          *
 \**************************************************************************/
 
@@ -32,15 +32,13 @@
 /// \brief NOP out codes for disabling the CGameMode::m_lastLockOnPcGid assignment to ignore shift right click.
 ///        The assignment occurs inside CGameMode::ProcessPcPick function.
 ///
-NoAutoFollow = function()
+NoAutoFollow = function(_)
 {
-	const _ = 'NoAutoFollow : ';
-
-	$$(_ + '1.1 - Ensure that \'Restore Auto Follow\' patch is not selected (unless in test mode)')
+	$$(_, 1.1, `Ensure that 'Restore Auto Follow' patch is not selected (unless in test mode)`)
 	if (!Warp.TestMode)
 		Warp.SetPatchState('RestoreAutoFollow', false);
 
-	$$(_ + '1.2 - Find the m_lastLockOnPcGid assignment (matches multiple locations)')
+	$$(_, 1.2, `Find the m_lastLockOnPcGid assignment (matches multiple locations)`)
 	let prefix =
 		PUSH_1               //push 1
 	+	PUSH(' [00011..0]')  //push 1Ah / push 1Ch
@@ -80,7 +78,7 @@ NoAutoFollow = function()
 	if (addr < 0)
 		throw Error("No matches found for assignment");
 
-	$$(_ + '2 - NOP out the assignment')
+	$$(_, 2, `NOP out the assignment`)
 	const ins = Instr.FromAddr(addr + prefix.byteCount());
 	Exe.SetNOPs(ins.Addr, ins.Size);
 
@@ -90,11 +88,9 @@ NoAutoFollow = function()
 ///
 /// \brief Decrease the limit value used for comparison against lastFollowTime
 ///
-DecrAFDelay = function()
+DecrAFDelay = function(_)
 {
-	const _ = 'DecrAFDelay : ';
-
-	$$(_ + '1.1 - Find the delay comparisons')
+	$$(_, 1.1, `Find the delay comparisons`)
 	const reg = Exe.Version > 6 ? EDI : EBX;
 	const code =
 		CALL(reg)           //call edi / call ebx           ; [<&WINMM.timeGetTime>]
@@ -106,7 +102,7 @@ DecrAFDelay = function()
 	if (addrs.isEmpty())
 		throw Error("No delay comparisons found");
 
-	$$(_ + '1.2 - Find the register movement before it to find the correct match')
+	$$(_, 1.2, `Find the register movement before it to find the correct match`)
 	const movReg = MOV(reg, [POS3WC]); //mov regA, dword ptr [<&WINMM.timeGetTime>] ; regA is edi / ebx
 	const addr = addrs.find( memAddr =>
 		Exe.FindLastHex(movReg, memAddr, memAddr - 0x20) > 0
@@ -114,13 +110,13 @@ DecrAFDelay = function()
 	if (!addr)
 		throw Error("No matches found");
 
-	$$(_ + '2.1 - Get the new value from the user')
+	$$(_, 2.1, `Get the new value from the user`)
 	const varName = '$followDelay';
 	const newDelay = Exe.GetUserInput(varName, D_Uint32, "Delay Value", "Enter the new autofollow delay", 1000, {max: 1000});
 	if (newDelay === false)
 		Cancel("Delay", 1000);
 
-	$$(_ + '2.2 - Replace the old value')
+	$$(_, 2.2, `Replace the old value`)
 	Exe.SetFromVar(addr + code.byteCount() - 4, varName);
 
 	return true;
@@ -129,15 +125,13 @@ DecrAFDelay = function()
 ///
 /// \brief Change the limit value used for comparison against lastDisappearTime
 ///
-CustomAFStopDelay = function()
+CustomAFStopDelay = function(_)
 {
-	const _ = 'CustomAFStopDelay : ';
-
-	$$(_ + '1.1 - Ensure \'No Auto follow\' patch is not selected (unless in test mode)')
+	$$(_, 1.1, `Ensure 'No Auto follow' patch is not selected (unless in test mode)`)
 	if (!Warp.TestMode)
 		Warp.SetPatchState('NoAutoFollow', false);
 
-	$$(_ + '1.2 - Find the delay comparisons')
+	$$(_, 1.2, `Find the delay comparisons`)
 	const code =
 		CALL(ESI)           //call esi                      ; [<&WINMM.timeGetTime>]
 	+	SUB(EAX, [POS4WC])  //sub eax, dword ptr [offset#1] ; lastDisappearTime
@@ -148,7 +142,7 @@ CustomAFStopDelay = function()
 	if (addrs.isEmpty())
 		throw Error("No delay comparisons found");
 
-	$$(_ + '1.3 - Find the register movement before it to find the correct match')
+	$$(_, 1.3, `Find the register movement before it to find the correct match`)
 	const movReg = MOV(ESI, [POS3WC]); //mov esi, dword ptr [<&WINMM.timeGetTime>]
 	const addr = addrs.find( memAddr =>
 		Exe.FindLastHex(movReg, memAddr, memAddr - 0x20) > 0
@@ -156,13 +150,13 @@ CustomAFStopDelay = function()
 	if (!addr)
 		throw Error("No matches found");
 
-	$$(_ + '2.1 - Get the new value from the user')
+	$$(_, 2.1, `Get the new value from the user`)
 	const varName = '$followStopDelay';
 	const newDelay = Exe.GetUserInput(varName, D_Uint32, "Delay Value", "Enter the new autofollow stop delay", 10000);
 	if (newDelay === false)
 		Cancel("Stop Delay", 10000);
 
-	$$(_ + '2.2 - Replace the old value')
+	$$(_, 2.2, `Replace the old value`)
 	Exe.SetFromVar(addr + code.byteCount() - 4, varName);
 
 	return true;
