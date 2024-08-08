@@ -1,3 +1,13 @@
+# 2024-08-07 Changes
+
+## Common Updates
+- Updated Copyright year in all the Init & Support files.
+
+## Patch Updates
+- Fixed Init modules to work with latest clients (i.e. 2024).
+- Some amount of validation is still needed for some of them especially LUA which will be done while fixing the patches.
+
+
 # 2023-08-27 Changes
 
 ## Common Updates
