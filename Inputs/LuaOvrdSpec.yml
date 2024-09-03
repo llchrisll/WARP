@@ -22,7 +22,7 @@
 #                                                                          #
 #   Author(s)     : Neo-Mind                                               #
 #   Created Date  : 2022-09-29                                             #
-#   Last Modified : 2022-09-29                                             #
+#   Last Modified : 2024-08-31                                             #
 #                                                                          #
 ############################################################################
 
@@ -35,7 +35,6 @@
 Swap:
     DataInfo\accName_F: cls\accname_f
     DataInfo\jobName_F: cls\jobname_f
-    DataInfo\QuestInfo_f: cls\questinfo_f
     DataInfo\AddRandomOption_F: cls\addrandomoption_f
     DataInfo\ShadowTable_F: cls\shadowtable_f
     DataInfo\SpriteRobeName_F: cls\spriterobename_f
