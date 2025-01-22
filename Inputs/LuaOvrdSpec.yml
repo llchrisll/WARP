@@ -55,8 +55,8 @@ LoadAfter:
     DataInfo\ShadowTable: cls\shadowtable
     
     # Random option overrides
-   DataInfo\EnumVAR: cls\enumvar
-   DataInfo\AddRandomOptionNameTable: cls\randomoption
+    DataInfo\EnumVAR: cls\enumvar
+    DataInfo\AddRandomOptionNameTable: cls\randomoption
     
     # Robe overrides
     DataInfo\SpriteRobeId: cls\spriterobeid
